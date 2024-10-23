@@ -1,0 +1,6 @@
+- Make map
+	- grass tiles
+	- tree tiles
+- Player movement
+	- stop at edges
+- Figure out resolution
