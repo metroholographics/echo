@@ -1,18 +1,33 @@
 #ifndef ECHO_H
 #define ECHO_H
+
+#include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <SDL.h>
 
 #define SCREEN_W 960
 #define SCREEN_H 540
 
-#define TILE_W 8
-#define TILE_H 12
+#define TILE_W 16
+#define TILE_H 24
 
-#define MAP_W 80
-#define MAP_H 27
+#define MAP_W 60
+#define MAP_H 20
 #define MAP_TILE_W SCREEN_W / MAP_W
 #define MAP_TILE_H SCREEN_H / MAP_H
+
+typedef enum {
+	T_T_GROUND = 0,
+	T_T_GRASS,
+	MAX_TILES
+} Tile_Type;
+
+typedef struct {
+	Tile_Type t_type;
+	bool walkable;
+	SDL_Rect source;
+} Tile;
 
 typedef struct {
 	SDL_Rect source;
@@ -24,6 +39,8 @@ extern	SDL_Window* window;
 extern	SDL_Renderer* renderer;
 extern	SDL_Texture* tilesheet;
 extern	Player* player;
+extern	Tile tile_list[MAX_TILES];
+extern	Tile** map;
 
 //main functions
 int		init_context(void);
@@ -35,6 +52,12 @@ Player*	init_player(void);
 void	draw_player(Player* p);
 void	kill_player(Player* p);
 
+//map.c functions
+void	init_tiles(Tile arr[]);
+Tile**	generate_map(void);
+Tile*	get_rand_tile(void);
+void	draw_map(Tile** m);
+void	kill_map(Tile** m);
 
 
 #endif

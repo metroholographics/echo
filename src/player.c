@@ -34,6 +34,7 @@ draw_player(Player* p)
 void
 kill_player(Player* p)
 {
-	printf("Freeing player...\n");
 	free(p);
+	p = NULL;
+	printf("Player free'd...\n");
 }

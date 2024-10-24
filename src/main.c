@@ -8,18 +8,28 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Texture* tilesheet = NULL;
 Player* player = NULL;
+Tile tile_list[MAX_TILES];
+Tile** map = NULL;
 
 int
 main(int argc, char* argv[])
 {
+	srand(time(NULL));
 	bool running;
-	Player* player;
 	SDL_Event e;
 
 	if (init_context() != 0) return 1;
 	if (load_tilesheet() != 0) return 1;
 
 	player = init_player();
+
+	init_tiles(tile_list);
+	for (int i = 0; i < MAX_TILES; i++) {
+		printf("tile %d loaded\n", tile_list[i].t_type);
+	}
+
+	map = generate_map();
+	if (map != NULL) printf("Map gen successful\n");
 
 	running = true;
     while (running)
@@ -42,10 +52,11 @@ main(int argc, char* argv[])
         	}
 
         }
+        draw_map(map);
+		draw_player(player);
 
-        draw_player(player);
         
-        SDL_RenderPresent(renderer);
+		SDL_RenderPresent(renderer);
      }
 
     quit_game();
@@ -95,6 +106,7 @@ quit_game(void)
 {
 	printf("---QUITTING---\n");
 	kill_player(player);
+	kill_map(map);
 	SDL_DestroyTexture(tilesheet);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
