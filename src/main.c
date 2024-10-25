@@ -30,6 +30,7 @@ main(int argc, char* argv[])
 
 	map = generate_map();
 	if (map != NULL) printf("Map gen successful\n");
+	else return 1;
 
 	running = true;
     while (running)
@@ -50,12 +51,11 @@ main(int argc, char* argv[])
         			else if (e.key.keysym.sym == SDLK_d) player->pos.x += 1;
         			break;
         	}
-
         }
+
         draw_map(map);
 		draw_player(player);
 
-        
 		SDL_RenderPresent(renderer);
      }
 
@@ -69,10 +69,12 @@ init_context(void)
         printf("error initializing SDL: %s\n", SDL_GetError());
         return 1;
     }
-
-    window = SDL_CreateWindow("echo",
-    	SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-    	SCREEN_W, SCREEN_H, 0);
+    window = SDL_CreateWindow(
+    	"echo",
+    	SDL_WINDOWPOS_CENTERED,
+    	SDL_WINDOWPOS_CENTERED,
+    	SCREEN_W, SCREEN_H, 0
+    );
 
     if (!window)
     {
@@ -81,7 +83,7 @@ init_context(void)
         return 1;
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
     	printf("error creating renderer: %s\n", SDL_GetError());
         quit_game();

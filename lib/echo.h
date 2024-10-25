@@ -19,7 +19,9 @@
 
 typedef enum {
 	T_T_GROUND = 0,
+	T_T_DIRT,
 	T_T_GRASS,
+	T_T_TREE,
 	MAX_TILES
 } Tile_Type;
 
@@ -27,6 +29,8 @@ typedef struct {
 	Tile_Type t_type;
 	bool walkable;
 	SDL_Rect source;
+	bool visible;
+	bool seen;
 } Tile;
 
 typedef struct {
@@ -56,6 +60,7 @@ void	kill_player(Player* p);
 void	init_tiles(Tile arr[]);
 Tile**	generate_map(void);
 Tile*	get_rand_tile(void);
+void	gen_forest(Tile** m);
 void	draw_map(Tile** m);
 void	kill_map(Tile** m);
 

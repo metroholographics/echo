@@ -4,6 +4,7 @@ Player*
 init_player(void)
 {
 	Player* p = calloc(1, sizeof(Player));
+
 	if (p == NULL) {
 		printf("Player could not be initialised\n");
 		return p;
@@ -18,6 +19,7 @@ init_player(void)
 	p->dest.y = 0;
 	p->dest.w = MAP_TILE_W;
 	p->dest.h = MAP_TILE_H;
+
 	return p;
 }
 
