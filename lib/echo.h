@@ -6,14 +6,14 @@
 #include <stdbool.h>
 #include <SDL.h>
 
-#define SCREEN_W 960
-#define SCREEN_H 540
+#define SCREEN_W 1024 //960
+#define SCREEN_H 576 //540
 
 #define TILE_W 16
 #define TILE_H 24
 
-#define MAP_W 60
-#define MAP_H 20
+#define MAP_W 80
+#define MAP_H 26
 #define MAP_TILE_W SCREEN_W / MAP_W
 #define MAP_TILE_H SCREEN_H / MAP_H
 
@@ -22,6 +22,7 @@ typedef enum {
 	T_T_DIRT,
 	T_T_GRASS,
 	T_T_TREE,
+	T_T_WATER,
 	MAX_TILES
 } Tile_Type;
 

@@ -1,12 +1,13 @@
 V.0.01 GOALS:
-- Interesting natural map (forest, ponds, clumps of stone) - one map only
+- Interesting natural map (forest, ponds) - one map only
 - Player field of view and 'seen' tiles
 - Place fireplace for extra light
 
 
 TASKS:
 - Make map
-	- interesting map, e.g. clumps of forest, ponds
+	- ponds
+- Easy function to get surrounding 3x3 grid of a tile
 - Player field of vision
 - Player movement
 	- stop at edges and unwalkable terrain

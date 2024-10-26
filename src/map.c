@@ -51,6 +51,17 @@ init_tiles(Tile arr[])
 					.h = TILE_H
 				}
 			}; 
+		} else if (i == T_T_WATER) {
+			arr[i] = (Tile) {
+				.t_type = T_T_TREE,
+				.walkable = false,
+				.source = (SDL_Rect) {
+					.x = 80,
+					.y = 0,
+					.w = TILE_W,
+					.h = TILE_H
+				}
+			}; 
 		}
 	}
 }
@@ -73,19 +84,29 @@ generate_map(void)
 			return m;
 		}
 		for (x = 0; x < MAP_W; x++) {
-			Tile t = *(get_rand_tile());
-			m[y][x] = t;
+			m[y][x] = *(get_rand_tile());//tile_list[T_T_GROUND];
 		}
 	}
-	gen_forest(m);
+	
+	gen_forest(m); 
 	return m; 
 }
 
 void
 gen_forest(Tile** m)
 {
-	int y , x, c_y, c_x, chance;
 
+	int c_x, c_y, chance, i, num_trees, rand_x, rand_y, y, x; 
+
+	num_trees = (rand() % 10) + 10;
+
+	for (i = 0; i < num_trees; i++) {
+		rand_y = rand() % MAP_H;
+		rand_x = rand() % MAP_W;
+		m[rand_y][rand_x] = tile_list[T_T_TREE];
+	} /*TODO: Store these positions in an array to jump to them below?*/
+
+	/* TODO: loop to the exact point of the trees placed and generate 'forest', instead of looping*/
 	for (y = 0; y < MAP_H; y++) {
 		for (x = 0; x < MAP_W; x++) {
 			if (m[y][x].t_type == T_T_TREE) {
@@ -93,17 +114,14 @@ gen_forest(Tile** m)
 					for (c_x = -1; c_x < 2; c_x++) {
 						chance = rand() % 100;
 						if (y + c_y > 0 && y + c_y < MAP_H && x + c_x > 0 && x + c_x < MAP_W) {
-							if (chance < 22) m[y + c_y][x + c_x] = tile_list[T_T_TREE];
+							if (chance <= 40) m[y + c_y][x + c_x] = tile_list[T_T_TREE];
+							else m[y + c_y][x + c_x] = tile_list[T_T_GRASS];
 						}
 					}
 				}
-			}
+			} 
 		}
 	}
-
-	//add code to add 'dirt' tiles on ground tiles that are near trees 
-
-
 }
 
 Tile*
@@ -113,11 +131,9 @@ get_rand_tile(void)
 	Tile* t;
 
 	r = rand() % 100;
-	if (r < 3) {
-		t = &tile_list[T_T_TREE];
-	} else if (r < 15) {
-		t = &tile_list[T_T_GRASS];
-	} 
+	if (r < 15) {
+		t = &tile_list[T_T_DIRT];
+	}
 	else t = &tile_list[T_T_GROUND];
 
 	return t;

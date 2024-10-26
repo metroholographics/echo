@@ -89,6 +89,7 @@ init_context(void)
         quit_game();
         return 1;
     }
+    SDL_RenderSetIntegerScale(renderer, true);
     return 0;
 }
 
