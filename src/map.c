@@ -84,7 +84,9 @@ generate_map(void)
 			return m;
 		}
 		for (x = 0; x < MAP_W; x++) {
-			m[y][x] = *(get_rand_tile());//tile_list[T_T_GROUND];
+			m[y][x] = *(get_rand_tile());
+			m[y][x].visible = false;
+			m[y][x].seen = false;
 		}
 	}
 	
@@ -151,7 +153,14 @@ draw_map(Tile** m)
 		dest.h = MAP_TILE_H;
 		for (x = 0; x < MAP_W; x++) {
 			dest.x = x * MAP_TILE_W;
-			SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
+			if (m[y][x].visible) {
+				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
+			} else if (m[y][x].seen) {
+				SDL_SetTextureAlphaMod(tilesheet, 40);
+				//SDL_SetTextureColorMod(tilesheet, 125, 125, 125);
+				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
+				SDL_SetTextureAlphaMod(tilesheet, 255);
+			}
 		}
 	}
 }

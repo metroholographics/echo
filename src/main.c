@@ -10,6 +10,7 @@ SDL_Texture* tilesheet = NULL;
 Player* player = NULL;
 Tile tile_list[MAX_TILES];
 Tile** map = NULL;
+char* sheet = "./assets/tilesheet.png";
 
 int
 main(int argc, char* argv[])
@@ -45,15 +46,14 @@ main(int argc, char* argv[])
         			running = false;
         			break;
         		case SDL_KEYDOWN:
-        			if (e.key.keysym.sym == SDLK_w) player->pos.y -= 1;
-        			else if (e.key.keysym.sym == SDLK_s) player->pos.y += 1;
-        			else if (e.key.keysym.sym == SDLK_a) player->pos.x -= 1;
-        			else if (e.key.keysym.sym == SDLK_d) player->pos.x += 1;
+        			move_player(e);
         			break;
         	}
         }
+        update_player_fov();
 
         draw_map(map);
+        
 		draw_player(player);
 
 		SDL_RenderPresent(renderer);
@@ -89,18 +89,19 @@ init_context(void)
         quit_game();
         return 1;
     }
-    SDL_RenderSetIntegerScale(renderer, true);
+
     return 0;
 }
 
 int
 load_tilesheet(void) {
-	tilesheet = IMG_LoadTexture(renderer, "./assets/tilesheet.png");
+	tilesheet = IMG_LoadTexture(renderer, sheet);
 	if (tilesheet == NULL) {
 		printf("error loading tilesheet: %s\n", SDL_GetError());
 		quit_game();
 		return 1;
 	}
+	//SDL_SetTextureScaleMode(tilesheet, SDL_ScaleModeBest);
 	return 0;
 }
 

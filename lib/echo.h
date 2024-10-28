@@ -6,16 +6,16 @@
 #include <stdbool.h>
 #include <SDL.h>
 
-#define SCREEN_W 1024 //960
-#define SCREEN_H 576 //540
+#define SCREEN_W 1280/*960, 1024, 1280*/
+#define SCREEN_H 720/*540, 576, 720*/
 
 #define TILE_W 16
 #define TILE_H 24
 
 #define MAP_W 80
-#define MAP_H 26
-#define MAP_TILE_W SCREEN_W / MAP_W
-#define MAP_TILE_H SCREEN_H / MAP_H
+#define MAP_H 27
+#define MAP_TILE_W (int) SCREEN_W / MAP_W
+#define MAP_TILE_H (int) SCREEN_H / MAP_H
 
 typedef enum {
 	T_T_GROUND = 0,
@@ -38,6 +38,7 @@ typedef struct {
 	SDL_Rect source;
 	SDL_Point pos;
 	SDL_Rect dest;
+	SDL_Point matrix[9];
 } Player;
 
 extern	SDL_Window* window;
@@ -52,9 +53,14 @@ int		init_context(void);
 int		load_tilesheet(void);
 void	quit_game(void);
 
+
 //player.c functions
 Player*	init_player(void);
+void	move_player(SDL_Event e);
+void	update_player_fov(void);
+void	clear_player_fov(void);
 void	draw_player(Player* p);
+void	get_matrix_three(void);
 void	kill_player(Player* p);
 
 //map.c functions

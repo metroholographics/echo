@@ -7,8 +7,7 @@ V.0.01 GOALS:
 TASKS:
 - Make map
 	- ponds
-- Easy function to get surrounding 3x3 grid of a tile
-- Player field of vision
+- Make player FOV better
 - Player movement
 	- stop at edges and unwalkable terrain
 	- add diagonal movement
