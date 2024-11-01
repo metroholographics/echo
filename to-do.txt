@@ -1,13 +1,17 @@
-V.0.01 GOALS:
-- Interesting natural map (forest, ponds) - one map only
-- Player field of view and 'seen' tiles
-- Place fireplace for extra light
+V0.02 Goals:
+- ???
 
 
 TASKS:
-- Make map
-	- ponds
-- Player movement
-	- stop at edges and unwalkable terrain
-	- add diagonal movement
-- Place fireplace
+- Create new headers and seperate functions (Tile, Tools/Util)
+- ???
+
+Nice to haves:
+- Pond gen tweaks
+- Improve FoV visuals (tile colouring?)
+- Code cleanup
+
+V.0.01:
+- 'Interesting' natural map (forest, grass, ponds) - one map only
+- 8-direction player movement and collision
+- Player field of view and 'seen' til memory

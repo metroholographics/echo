@@ -106,6 +106,7 @@ load_tilesheet(void) {
 	return 0;
 }
 
+//TO_DO: MOVE THIS TO A TOOLS.C FILE
 int
 get_distance_sq(int x1, int y1, int x2, int y2)
 {

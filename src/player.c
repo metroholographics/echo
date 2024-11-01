@@ -30,12 +30,29 @@ move_player(SDL_Event e, Tile** m)
 {
 	SDL_Point new_pos = player->pos;
 
-	if (e.key.keysym.sym == SDLK_w) new_pos.y -= 1;
-	else if (e.key.keysym.sym == SDLK_s) new_pos.y += 1;
-	else if (e.key.keysym.sym == SDLK_a) new_pos.x -= 1;
-	else if (e.key.keysym.sym == SDLK_d) new_pos.x += 1;
+	bool shift_down = SDL_GetModState() & KMOD_SHIFT;
+
+	if (e.key.keysym.sym == SDLK_w) {
+		if (shift_down) new_pos.x -= 1;
+ 		new_pos.y -= 1;
+	}
+	else if (e.key.keysym.sym == SDLK_s) {
+		if (shift_down) new_pos.x += 1;
+		new_pos.y += 1;
+	}
+	else if (e.key.keysym.sym == SDLK_a) {
+		if (shift_down) new_pos.y += 1;
+		new_pos.x -= 1;
+	}
+	else if (e.key.keysym.sym == SDLK_d) {
+		if (shift_down) new_pos.y -= 1;
+		new_pos.x += 1;
+	}
+
 	//TO_DO: Add collision checking on the new_pos
-	player->pos = new_pos;
+	if (in_map(new_pos.x, new_pos.y) && m[new_pos.y][new_pos.x].walkable) {
+		player->pos = new_pos;
+	}
 	update_player_fov(m);
 	
 }
@@ -49,6 +66,8 @@ draw_player(Player* p)
 	SDL_RenderCopy(renderer, tilesheet, &p->source, &p->dest);
 }
 
+
+//TO_DO: CHANGE ALL LINES MODIFYING MAP INTO MAP FUNCTIONS
 void
 update_player_fov(Tile** m)
 {
@@ -73,7 +92,7 @@ update_player_fov(Tile** m)
 		for (x = min_x; x <= max_x; x++) {
 			dist_sq = get_distance_sq(px, py, x, y);
 			if (dist_sq <= radius_sq) {
-				if (has_los(m, player->pos.x, player->pos.y, x, y)) {
+				if (has_los(m, px, py, x, y)) {
 					m[y][x].visible = true;
 					m[y][x].seen = true;
 				}

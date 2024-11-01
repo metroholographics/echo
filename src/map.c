@@ -1,5 +1,6 @@
 #include <echo.h>
 
+//TO_DO: MOVE ALL TILES FUNCTIONS TO SOME TILES.C?
 void
 init_tiles(Tile arr[])
 {
@@ -57,7 +58,7 @@ init_tiles(Tile arr[])
 			}; 
 		} else if (i == T_T_WATER) {
 			arr[i] = (Tile) {
-				.t_type = T_T_TREE,
+				.t_type = T_T_WATER,
 				.walkable = false,
 				.blocks_light = false,
 				.source = (SDL_Rect) {
@@ -94,9 +95,51 @@ generate_map(void)
 			m[y][x].seen = false;
 		}
 	}
-	
-	gen_forest(m); 
+
+	gen_forest(m);
+	gen_ponds(m); 
 	return m; 
+}
+
+void
+gen_ponds(Tile** m)
+{
+	int c_y, c_x, chance, x, y, num_water = 0;
+
+	for (y = 0; y < MAP_H; y++) {
+		for (x = 0; x < MAP_W; x++) {
+			if(m[y][x].t_type != T_T_TREE) {
+				chance = rand() % 100;
+				if (chance <= 1) m[y][x] = tile_list[T_T_WATER];
+			}
+		}
+	}
+	for (y = 0; y < MAP_H; y++) {
+		for (x = 0; x < MAP_W; x++) {
+			if (m[y][x].t_type == T_T_WATER) {
+				for (c_y = -1; c_y < 2; c_y++) {
+					for (c_x = -1; c_x < 2; c_x++) {
+						if (in_map(x + c_x, y + c_y) && m[y + c_y][x + c_x].t_type == T_T_WATER) {
+							num_water++;
+						}
+					}
+				}
+				if (num_water >= 2) {
+					for (c_y = -1; c_y < 2; c_y++) {
+						for (c_x = -1; c_x < 2; c_x++) {
+							if (in_map(x + c_x, y + c_y)) {
+								chance  = rand() % 100;
+								if(chance < 35 && m[y + c_y][x + c_x].t_type != T_T_TREE) m[y + c_y][x + c_x] = tile_list[T_T_WATER];
+							}
+						}
+					}
+				} else if (num_water <= 1) {
+					m[y][x] = tile_list[T_T_DIRT];
+				}
+				num_water = 0;
+			}
+		}
+	}
 }
 
 void
@@ -111,16 +154,14 @@ gen_forest(Tile** m)
 		rand_y = rand() % MAP_H;
 		rand_x = rand() % MAP_W;
 		m[rand_y][rand_x] = tile_list[T_T_TREE];
-	} /*TO_DO: Store these positions in an array to jump to them below?*/
-
-	/* TO_DO: loop to the exact point of the trees placed and generate 'forest', instead of looping*/
+	} /*TO_DO: FIGURE OUT A CLEANER WAY TO DO THIS?*/
 	for (y = 0; y < MAP_H; y++) {
 		for (x = 0; x < MAP_W; x++) {
 			if (m[y][x].t_type == T_T_TREE) {
 				for (c_y = -1; c_y < 2; c_y++) {
 					for (c_x = -1; c_x < 2; c_x++) {
 						chance = rand() % 100;
-						if (y + c_y > 0 && y + c_y < MAP_H && x + c_x > 0 && x + c_x < MAP_W) {
+						if (in_map(x + c_x, y + c_y)) {
 							if (chance <= 40) m[y + c_y][x + c_x] = tile_list[T_T_TREE];
 							else m[y + c_y][x + c_x] = tile_list[T_T_GRASS];
 						}
@@ -145,6 +186,17 @@ get_rand_tile(void)
 
 	return t;
 }
+
+
+bool
+in_map(int x, int y)
+{
+	if (x < 0 || x >= MAP_W || y < 0 || y >= MAP_H) {
+		return false;
+	}
+	return true;
+}
+
 
 void
 draw_map(Tile** m)

@@ -2,7 +2,9 @@
 
 \~\~LOG\~\~
 
-V 0.01
+V 0.01 - DONE
+
+![Day7: V0.01](./log/day7v0.01.gif)
 
 23/10/24 - Day 1: Set-up project, player moving
 
@@ -15,3 +17,5 @@ V 0.01
 28/10/24 - Day 5: Added player FoV (3x3 grid, visible+seen tiles)
 
 31/10/24 - Day 6: Improved player FoV - circular raycasting + bresenham's line (used Claude)
+
+01/11/24 - Day 7 (V0.01): Added player move collision, diagonal movement, water feature ('pond') generation

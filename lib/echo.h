@@ -70,7 +70,9 @@ void	init_tiles(Tile arr[]);
 Tile**	generate_map(void);
 Tile*	get_rand_tile(void);
 void	gen_forest(Tile** m);
+void	gen_ponds(Tile** m);
 void	draw_map(Tile** m);
+bool	in_map(int x, int y);
 void	kill_map(Tile** m);
 
 
