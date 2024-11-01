@@ -7,7 +7,6 @@ V.0.01 GOALS:
 TASKS:
 - Make map
 	- ponds
-- Make player FOV better
 - Player movement
 	- stop at edges and unwalkable terrain
 	- add diagonal movement

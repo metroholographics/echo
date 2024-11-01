@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <SDL.h>
+#include <math.h>
 
 #define SCREEN_W 1280/*960, 1024, 1280*/
 #define SCREEN_H 720/*540, 576, 720*/
@@ -29,6 +30,7 @@ typedef enum {
 typedef struct {
 	Tile_Type t_type;
 	bool walkable;
+	bool blocks_light;
 	SDL_Rect source;
 	bool visible;
 	bool seen;
@@ -51,16 +53,16 @@ extern	Tile** map;
 //main functions
 int		init_context(void);
 int		load_tilesheet(void);
+int		get_distance_sq(int x1, int y1, int x2, int y2);
 void	quit_game(void);
 
 
 //player.c functions
 Player*	init_player(void);
-void	move_player(SDL_Event e);
-void	update_player_fov(void);
-void	clear_player_fov(void);
+void	move_player(SDL_Event e, Tile** m);
+void	update_player_fov(Tile** m);
+bool	has_los(Tile** m, int x1, int y1, int x2, int y2);
 void	draw_player(Player* p);
-void	get_matrix_three(void);
 void	kill_player(Player* p);
 
 //map.c functions

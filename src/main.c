@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <echo.h>
+#include <math.h>
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -32,8 +33,9 @@ main(int argc, char* argv[])
 	map = generate_map();
 	if (map != NULL) printf("Map gen successful\n");
 	else return 1;
-
+	update_player_fov(map);
 	running = true;
+
     while (running)
     {
     	SDL_SetRenderDrawColor(renderer, 21, 19, 19, 255);
@@ -46,14 +48,13 @@ main(int argc, char* argv[])
         			running = false;
         			break;
         		case SDL_KEYDOWN:
-        			move_player(e);
+        			move_player(e, map);
         			break;
         	}
         }
-        update_player_fov();
 
         draw_map(map);
-        
+
 		draw_player(player);
 
 		SDL_RenderPresent(renderer);
@@ -103,6 +104,14 @@ load_tilesheet(void) {
 	}
 	//SDL_SetTextureScaleMode(tilesheet, SDL_ScaleModeBest);
 	return 0;
+}
+
+int
+get_distance_sq(int x1, int y1, int x2, int y2)
+{
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+	return dx * dx + dy * dy;
 }
 
 void

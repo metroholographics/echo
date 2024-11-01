@@ -11,6 +11,7 @@ init_tiles(Tile arr[])
 			arr[i] = (Tile) {
 				.t_type = T_T_GROUND,
 				.walkable = true,
+				.blocks_light = false,
 				.source = (SDL_Rect) {
 					.x = 16,
 					.y = 0,
@@ -22,6 +23,7 @@ init_tiles(Tile arr[])
 			arr[i] = (Tile) {
 				.t_type = T_T_DIRT,
 				.walkable = true,
+				.blocks_light = false,
 				.source = (SDL_Rect) {
 					.x = 32,
 					.y = 0,
@@ -33,6 +35,7 @@ init_tiles(Tile arr[])
 			arr[i] = (Tile) {
 				.t_type = T_T_GRASS,
 				.walkable = true,
+				.blocks_light = false,
 				.source = (SDL_Rect) {
 					.x = 48,
 					.y = 0,
@@ -44,6 +47,7 @@ init_tiles(Tile arr[])
 			arr[i] = (Tile) {
 				.t_type = T_T_TREE,
 				.walkable = false,
+				.blocks_light = true,
 				.source = (SDL_Rect) {
 					.x = 64,
 					.y = 0,
@@ -55,6 +59,7 @@ init_tiles(Tile arr[])
 			arr[i] = (Tile) {
 				.t_type = T_T_TREE,
 				.walkable = false,
+				.blocks_light = false,
 				.source = (SDL_Rect) {
 					.x = 80,
 					.y = 0,
@@ -106,9 +111,9 @@ gen_forest(Tile** m)
 		rand_y = rand() % MAP_H;
 		rand_x = rand() % MAP_W;
 		m[rand_y][rand_x] = tile_list[T_T_TREE];
-	} /*TODO: Store these positions in an array to jump to them below?*/
+	} /*TO_DO: Store these positions in an array to jump to them below?*/
 
-	/* TODO: loop to the exact point of the trees placed and generate 'forest', instead of looping*/
+	/* TO_DO: loop to the exact point of the trees placed and generate 'forest', instead of looping*/
 	for (y = 0; y < MAP_H; y++) {
 		for (x = 0; x < MAP_W; x++) {
 			if (m[y][x].t_type == T_T_TREE) {
@@ -156,8 +161,8 @@ draw_map(Tile** m)
 			if (m[y][x].visible) {
 				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
 			} else if (m[y][x].seen) {
-				SDL_SetTextureAlphaMod(tilesheet, 40);
-				//SDL_SetTextureColorMod(tilesheet, 125, 125, 125);
+				SDL_SetTextureAlphaMod(tilesheet, 80);
+				//TO_DO: Learn how to store this --> SDL_SetTextureColorMod(tilesheet, 125, 125, 125);
 				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
 				SDL_SetTextureAlphaMod(tilesheet, 255);
 			}

@@ -1,6 +1,6 @@
 CC = clang
 IFLAGS = -I./lib/
-LFLAGS = `sdl2-config --libs --cflags` -lSDL2_image
+LFLAGS = `sdl2-config --libs --cflags` -lSDL2_image -lm
 CFLAGS = -Wall -Wextra -Wpedantic -std=c99 
 SOURCES = ./src/*.c
 TARGET = echo

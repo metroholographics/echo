@@ -1,5 +1,7 @@
 #include <echo.h>
 
+#define MAX_RADIUS 12
+
 Player*
 init_player(void)
 {
@@ -24,7 +26,7 @@ init_player(void)
 }
 
 void
-move_player(SDL_Event e)
+move_player(SDL_Event e, Tile** m)
 {
 	SDL_Point new_pos = player->pos;
 
@@ -34,13 +36,13 @@ move_player(SDL_Event e)
 	else if (e.key.keysym.sym == SDLK_d) new_pos.x += 1;
 	//TO_DO: Add collision checking on the new_pos
 	player->pos = new_pos;
+	update_player_fov(m);
 	
 }
 
 void
 draw_player(Player* p)
 {
-	clear_player_fov();
 	p->dest.x = p->pos.x * MAP_TILE_W;
 	p->dest.y = p->pos.y * MAP_TILE_H;
 
@@ -48,44 +50,69 @@ draw_player(Player* p)
 }
 
 void
-update_player_fov(void)
+update_player_fov(Tile** m)
 {
-	int i;
+	int dist_sq, min_x, min_y, max_x, max_y, px = player->pos.x, py = player->pos.y, y, x;
+	int radius_sq = MAX_RADIUS * MAX_RADIUS;
 
-	get_matrix_three();
-	for (i = 0; i < 9; i++) {
-		if (player->matrix[i].y >= 0 && player->matrix[i].y < MAP_H && player->matrix[i].x >= 0 && player->matrix[i].x < MAP_W) {
-			map[player->matrix[i].y][player->matrix[i].x].visible = true;
-			map[player->matrix[i].y][player->matrix[i].x].seen = true;
+	//clear FOV
+	for (y = 0; y < MAP_H; y++) {
+		for (x = 0; x < MAP_W; x++) {
+			m[y][x].visible = false;
+		}
+	}
+
+	min_x = (px - MAX_RADIUS) < 0 ? 0 : px - MAX_RADIUS;
+	max_x = (px + MAX_RADIUS) >= MAP_W ? MAP_W - 1 : px + MAX_RADIUS;
+	min_y = (py - MAX_RADIUS) < 0 ? 0 : py - MAX_RADIUS;
+	max_y = (py + MAX_RADIUS) >= MAP_H ? MAP_H - 1 : py + MAX_RADIUS;
+
+	m[py][px].visible = true;
+
+	for (y = min_y; y <= max_y; y++) {
+		for (x = min_x; x <= max_x; x++) {
+			dist_sq = get_distance_sq(px, py, x, y);
+			if (dist_sq <= radius_sq) {
+				if (has_los(m, player->pos.x, player->pos.y, x, y)) {
+					m[y][x].visible = true;
+					m[y][x].seen = true;
+				}
+			}
 		}
 	}
 }
 
-void
-clear_player_fov(void)
+bool
+has_los(Tile** m, int x1, int y1, int x2, int y2)
 {
-	int i;
+	int dx = abs(x2 - x1);
+	int dy = abs(y2 - y1);
+	int x = x1;
+	int y = y1;
 
-	for (i = 0; i < 9; i++) {
-		if (player->matrix[i].y >= 0 && player->matrix[i].y < MAP_H && player->matrix[i].x >= 0 && player->matrix[i].x < MAP_W) {
-			map[player->matrix[i].y][player->matrix[i].x].visible = false;
+	int sx = x1 < x2 ? 1 : -1;
+	int sy = y1 < y2 ? 1 : -1;
+	int err = dx - dy;
+
+	while (x != x2 || y != y2) {
+		if (x != x2 || y != y2) {
+			if (x < 0 || x >= MAP_W || y < 0 || y >= MAP_H) return false;
+			if (m[y][x].blocks_light) return false;
+		}
+
+		int e2 = 2 * err;
+		if (e2 > -dy) {
+			err -= dy;
+			x += sx;
+		}
+		if (e2 < dx) {
+			err += dx;
+			y += sy;
 		}
 	}
+	return true;
 }
 
-void
-get_matrix_three(void)
-{
-	player->matrix[0] = (SDL_Point) {.y = player->pos.y - 1, .x = player->pos.x - 1};
-	player->matrix[1] = (SDL_Point) {.y = player->pos.y - 1, .x = player->pos.x};
-	player->matrix[2] = (SDL_Point) {.y = player->pos.y - 1, .x = player->pos.x + 1};
-	player->matrix[3] = (SDL_Point) {.y = player->pos.y, .x = player->pos.x - 1};
-	player->matrix[4] = (SDL_Point) {.y = player->pos.y, .x = player->pos.x};
-	player->matrix[5] = (SDL_Point) {.y = player->pos.y, .x = player->pos.x + 1};
-	player->matrix[6] = (SDL_Point) {.y = player->pos.y + 1, .x = player->pos.x - 1};
-	player->matrix[7] = (SDL_Point) {.y = player->pos.y + 1, .x = player->pos.x};
-	player->matrix[8] = (SDL_Point) {.y = player->pos.y + 1, .x = player->pos.x + 1};
-}
 
 void
 kill_player(Player* p)
