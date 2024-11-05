@@ -11,12 +11,12 @@
 #define SCREEN_H 720/*540, 576, 720*/
 
 #define TILE_W 16
-#define TILE_H 24
+#define TILE_H 16
 
 #define MAP_W 80
-#define MAP_H 27
-#define MAP_TILE_W (int) SCREEN_W / MAP_W
-#define MAP_TILE_H (int) SCREEN_H / MAP_H
+#define MAP_H 32
+#define MAP_TILE_W (int) (SCREEN_W / MAP_W)
+#define MAP_TILE_H (int) (SCREEN_H / MAP_H)
 
 typedef enum {
 	T_T_GROUND = 0,
@@ -40,7 +40,7 @@ typedef struct {
 	SDL_Rect source;
 	SDL_Point pos;
 	SDL_Rect dest;
-	SDL_Point matrix[9];
+	int radius;
 } Player;
 
 extern	SDL_Window* window;

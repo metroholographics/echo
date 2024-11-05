@@ -2,7 +2,7 @@
 
 \~\~LOG\~\~
 
-V 0.01 - DONE
+### V 0.01 - DONE
 
 ![Day7: V0.01](./log/day7v0.01.gif)
 
@@ -19,3 +19,5 @@ V 0.01 - DONE
 31/10/24 - Day 6: Improved player FoV - circular raycasting + bresenham's line (used Claude)
 
 01/11/24 - Day 7 (V0.01): Added player move collision, diagonal movement, water feature ('pond') generation
+
+05/11/24 - Day 8: Planned V0.02, tweaked player FoV (less sight in grass), changed visuals

@@ -1,6 +1,6 @@
 #include <echo.h>
 
-#define MAX_RADIUS 12
+#define MAX_RADIUS 16
 
 Player*
 init_player(void)
@@ -21,6 +21,7 @@ init_player(void)
 	p->dest.y = 0;
 	p->dest.w = MAP_TILE_W;
 	p->dest.h = MAP_TILE_H;
+	p->radius = MAX_RADIUS;
 
 	return p;
 }
@@ -28,9 +29,11 @@ init_player(void)
 void
 move_player(SDL_Event e, Tile** m)
 {
-	SDL_Point new_pos = player->pos;
+	bool shift_down;
+	SDL_Point new_pos;
 
-	bool shift_down = SDL_GetModState() & KMOD_SHIFT;
+	shift_down = SDL_GetModState() & KMOD_SHIFT;
+	new_pos = player->pos;
 
 	if (e.key.keysym.sym == SDLK_w) {
 		if (shift_down) new_pos.x -= 1;
@@ -49,12 +52,8 @@ move_player(SDL_Event e, Tile** m)
 		new_pos.x += 1;
 	}
 
-	//TO_DO: Add collision checking on the new_pos
-	if (in_map(new_pos.x, new_pos.y) && m[new_pos.y][new_pos.x].walkable) {
-		player->pos = new_pos;
-	}
+	if (in_map(new_pos.x, new_pos.y) && m[new_pos.y][new_pos.x].walkable) player->pos = new_pos;
 	update_player_fov(m);
-	
 }
 
 void
@@ -71,9 +70,16 @@ draw_player(Player* p)
 void
 update_player_fov(Tile** m)
 {
-	int dist_sq, min_x, min_y, max_x, max_y, px = player->pos.x, py = player->pos.y, y, x;
-	int radius_sq = MAX_RADIUS * MAX_RADIUS;
+	
+	int dist_sq, min_x, min_y, max_x, max_y, px, py, radius_sq, x, y;
 
+	if (m[player->pos.y][player->pos.x].t_type == T_T_GRASS) player->radius = 2;
+	else player->radius = MAX_RADIUS;
+	radius_sq = player->radius * player->radius;
+
+	px = player->pos.x;
+	py = player->pos.y;
+	
 	//clear FOV
 	for (y = 0; y < MAP_H; y++) {
 		for (x = 0; x < MAP_W; x++) {
@@ -81,10 +87,10 @@ update_player_fov(Tile** m)
 		}
 	}
 
-	min_x = (px - MAX_RADIUS) < 0 ? 0 : px - MAX_RADIUS;
-	max_x = (px + MAX_RADIUS) >= MAP_W ? MAP_W - 1 : px + MAX_RADIUS;
-	min_y = (py - MAX_RADIUS) < 0 ? 0 : py - MAX_RADIUS;
-	max_y = (py + MAX_RADIUS) >= MAP_H ? MAP_H - 1 : py + MAX_RADIUS;
+	min_x = (px - player->radius) < 0 ? 0 : px - player->radius;
+	max_x = (px + player->radius) >= MAP_W ? MAP_W - 1 : px + player->radius;
+	min_y = (py - player->radius) < 0 ? 0 : py - player->radius;
+	max_y = (py + player->radius) >= MAP_H ? MAP_H - 1 : py + player->radius;
 
 	m[py][px].visible = true;
 
@@ -104,22 +110,24 @@ update_player_fov(Tile** m)
 bool
 has_los(Tile** m, int x1, int y1, int x2, int y2)
 {
-	int dx = abs(x2 - x1);
-	int dy = abs(y2 - y1);
-	int x = x1;
-	int y = y1;
+	int e2, err, dx, dy, sx, sy, x, y;
 
-	int sx = x1 < x2 ? 1 : -1;
-	int sy = y1 < y2 ? 1 : -1;
-	int err = dx - dy;
+	dx = abs(x2 - x1);
+	dy = abs(y2 - y1);
+	x = x1;
+	y = y1;
+
+	sx = x1 < x2 ? 1 : -1;
+	sy = y1 < y2 ? 1 : -1;
+	err = dx - dy;
 
 	while (x != x2 || y != y2) {
 		if (x != x2 || y != y2) {
-			if (x < 0 || x >= MAP_W || y < 0 || y >= MAP_H) return false;
+			if (!in_map(x, y)) return false;
 			if (m[y][x].blocks_light) return false;
 		}
 
-		int e2 = 2 * err;
+		e2 = 2 * err;
 		if (e2 > -dy) {
 			err -= dy;
 			x += sx;

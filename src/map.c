@@ -119,9 +119,7 @@ gen_ponds(Tile** m)
 			if (m[y][x].t_type == T_T_WATER) {
 				for (c_y = -1; c_y < 2; c_y++) {
 					for (c_x = -1; c_x < 2; c_x++) {
-						if (in_map(x + c_x, y + c_y) && m[y + c_y][x + c_x].t_type == T_T_WATER) {
-							num_water++;
-						}
+						if (in_map(x + c_x, y + c_y) && m[y + c_y][x + c_x].t_type == T_T_WATER) num_water++;
 					}
 				}
 				if (num_water >= 2) {
@@ -133,9 +131,8 @@ gen_ponds(Tile** m)
 							}
 						}
 					}
-				} else if (num_water <= 1) {
-					m[y][x] = tile_list[T_T_DIRT];
-				}
+				} else if (num_water <= 1) m[y][x] = tile_list[T_T_DIRT];
+
 				num_water = 0;
 			}
 		}
@@ -201,10 +198,11 @@ in_map(int x, int y)
 void
 draw_map(Tile** m)
 {
-	int y, x;
+	int x, y;
 	SDL_Rect dest;
 
 	for (y = 0; y < MAP_H; y++) {
+		//TO_DO: SET THE DEST RECT ON INITIALISE? E.G. MEMBER OF TILE STRUCT?
 		dest.y = y * MAP_TILE_H;
 		dest.w = MAP_TILE_W;
 		dest.h = MAP_TILE_H;
@@ -213,7 +211,7 @@ draw_map(Tile** m)
 			if (m[y][x].visible) {
 				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
 			} else if (m[y][x].seen) {
-				SDL_SetTextureAlphaMod(tilesheet, 80);
+				SDL_SetTextureAlphaMod(tilesheet, 50);
 				//TO_DO: Learn how to store this --> SDL_SetTextureColorMod(tilesheet, 125, 125, 125);
 				SDL_RenderCopy(renderer, tilesheet, &m[y][x].source, &dest);
 				SDL_SetTextureAlphaMod(tilesheet, 255);

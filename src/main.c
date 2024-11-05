@@ -11,13 +11,15 @@ SDL_Texture* tilesheet = NULL;
 Player* player = NULL;
 Tile tile_list[MAX_TILES];
 Tile** map = NULL;
-char* sheet = "./assets/tilesheet.png";
+char* sheet = "./assets/16x16.png";
 
 int
 main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	bool running;
+
+	bool running = true;
+	int i;
 	SDL_Event e;
 
 	if (init_context() != 0) return 1;
@@ -26,19 +28,19 @@ main(int argc, char* argv[])
 	player = init_player();
 
 	init_tiles(tile_list);
-	for (int i = 0; i < MAX_TILES; i++) {
+	for (i = 0; i < MAX_TILES; i++) {
 		printf("tile %d loaded\n", tile_list[i].t_type);
 	}
 
 	map = generate_map();
 	if (map != NULL) printf("Map gen successful\n");
 	else return 1;
+
 	update_player_fov(map);
-	running = true;
 
     while (running)
     {
-    	SDL_SetRenderDrawColor(renderer, 21, 19, 19, 255);
+    	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     	SDL_RenderClear(renderer);
 
         while (SDL_PollEvent(&e) != 0)
@@ -110,8 +112,11 @@ load_tilesheet(void) {
 int
 get_distance_sq(int x1, int y1, int x2, int y2)
 {
-	int dx = x2 - x1;
-	int dy = y2 - y1;
+	int dx, dy;
+
+	dx = x2 - x1;
+	dy = y2 - y1;
+
 	return dx * dx + dy * dy;
 }
 

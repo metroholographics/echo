@@ -1,10 +1,14 @@
 V0.02 Goals:
-- ???
-
+- UI on side of screen with Player Name, Role, and Abilities
+- Multiple maps to travel around
+- Fishing in lakes
 
 TASKS:
 - Create new headers and seperate functions (Tile, Tools/Util)
-- ???
+- UI
+- Multiple maps
+- Fishing ability
+- Visual - make tile background darker
 
 Nice to haves:
 - Pond gen tweaks
